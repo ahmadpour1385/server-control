@@ -1,0 +1,46 @@
+<div hx-get="{% url 'monitor_info' s.id %}" hx-trigger="every 3s" hx-target="#info-{{ s.id }}"
+     class="grid grid-cols-2 gap-2 mt-3 text-sm">
+  <div class="bg-slate-700 rounded p-2">🖥️ {{ info.hostname }}</div>
+  <div class="bg-slate-700 rounded p-2">⏱️ {{ info.uptime }}</div>
+  <div class="bg-slate-700 rounded p-2" dir="ltr">🧠 RAM (MB): {{ info.ram }}</div>
+  <div class="bg-slate-700 rounded p-2" dir="ltr">⚙️ Load: {{ info.load }}</div>
+  <div class="bg-slate-700 rounded p-2 col-span-2" dir="ltr">💾 Disk: {{ info.disk }}</div>
+
+  <div class="bg-slate-700 rounded p-2">
+    <div class="flex justify-between text-xs text-slate-300" dir="ltr">
+      <span>⚙️ CPU %</span>
+      {% if charts.cpu %}<span>now {{ charts.cpu.now }} · avg {{ charts.cpu.avg }} · max {{ charts.cpu.max }}</span>{% endif %}
+    </div>
+    {% if charts.cpu.points %}
+    <svg viewBox="0 0 300 60" preserveAspectRatio="none" class="w-full h-16 mt-1" dir="ltr">
+      <line x1="0" y1="30" x2="300" y2="30" class="stroke-slate-600" stroke-dasharray="4"/>
+      <polyline points="{{ charts.cpu.points }}" fill="none" class="stroke-sky-400"
+                stroke-width="2" vector-effect="non-scaling-stroke"/>
+    </svg>
+    {% else %}
+    <p class="text-xs text-slate-400 mt-2">در حال جمع‌آوری داده…</p>
+    {% endif %}
+  </div>
+
+  <div class="bg-slate-700 rounded p-2">
+    <div class="flex justify-between text-xs text-slate-300" dir="ltr">
+      <span>🧠 RAM %</span>
+      {% if charts.ram %}<span>now {{ charts.ram.now }} · avg {{ charts.ram.avg }} · max {{ charts.ram.max }}</span>{% endif %}
+    </div>
+    {% if charts.ram.points %}
+    <svg viewBox="0 0 300 60" preserveAspectRatio="none" class="w-full h-16 mt-1" dir="ltr">
+      <line x1="0" y1="30" x2="300" y2="30" class="stroke-slate-600" stroke-dasharray="4"/>
+      <polyline points="{{ charts.ram.points }}" fill="none" class="stroke-fuchsia-400"
+                stroke-width="2" vector-effect="non-scaling-stroke"/>
+    </svg>
+    {% else %}
+    <p class="text-xs text-slate-400 mt-2">در حال جمع‌آوری داده…</p>
+    {% endif %}
+  </div>
+
+  {% if s.secret %}
+  <button hx-post="{% url 'monitor_forget' s.id %}" hx-target="#info-{{ s.id }}"
+          hx-confirm="پسورد ذخیره‌شده پاک بشه؟"
+          class="col-span-2 text-xs text-slate-400 hover:text-slate-300">🔓 پاک کردن پسورد ذخیره‌شده</button>
+  {% endif %}
+</div>

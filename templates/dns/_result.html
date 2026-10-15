@@ -1,0 +1,16 @@
+{% if error %}
+<p class="bg-red-900/40 text-red-300 rounded p-3 text-sm">{{ error }}</p>
+{% else %}
+<div class="bg-slate-800 rounded-xl divide-y divide-slate-700" dir="ltr">
+  <div class="p-3 font-bold">{{ name }}</div>
+  {% for r in rows %}
+  <div class="flex gap-4 p-3 text-sm">
+    <span class="w-16 text-sky-300 font-bold">{{ r.type }}</span>
+    <span class="flex-1 break-all">{{ r.value }}</span>
+    <span class="text-slate-500">{{ r.ttl }}</span>
+  </div>
+  {% empty %}
+  <p class="p-3 text-slate-400">رکوردی پیدا نشد 🤷</p>
+  {% endfor %}
+</div>
+{% endif %}

@@ -1,0 +1,50 @@
+{% if error %}
+<p class="bg-red-900/40 text-red-300 rounded p-3 mb-3 text-sm" dir="ltr">{{ error }}</p>
+{% endif %}
+
+<div class="bg-slate-800 rounded-xl p-4 mb-4">
+  <div class="text-sm text-slate-400 mb-3" dir="ltr">{{ path }}</div>
+  <div class="flex flex-wrap gap-4">
+    <form hx-post="{% url 'files_upload' s.id %}" hx-target="#file-list"
+          hx-encoding="multipart/form-data" class="flex gap-2 items-center">
+      <input type="hidden" name="path" value="{{ path }}">
+      <input type="file" name="file" required class="text-sm">
+      <button class="bg-emerald-600 hover:bg-emerald-500 rounded px-3 py-1 font-bold">⬆️ آپلود</button>
+    </form>
+    <form hx-post="{% url 'files_mkdir' s.id %}" hx-target="#file-list" class="flex gap-2 items-center">
+      <input type="hidden" name="path" value="{{ path }}">
+      <input name="name" placeholder="اسم پوشه جدید" required dir="ltr" class="bg-slate-700 rounded p-1 text-sm">
+      <button class="bg-sky-600 hover:bg-sky-500 rounded px-3 py-1 font-bold">📁 ساخت</button>
+    </form>
+  </div>
+</div>
+
+<div class="bg-slate-800 rounded-xl divide-y divide-slate-700">
+  {% if parent %}
+  <button hx-get="{% url 'files' s.id %}?path={{ parent|urlencode }}" hx-target="#file-list"
+          class="w-full text-left p-3 hover:bg-slate-700" dir="ltr">⬆️ ..</button>
+  {% endif %}
+  {% for i in items %}
+  <div class="flex items-center justify-between p-3 hover:bg-slate-700/50">
+    {% if i.is_dir %}
+    <button hx-get="{% url 'files' s.id %}?path={{ i.path|urlencode }}" hx-target="#file-list"
+            class="text-sky-300 hover:text-sky-200" dir="ltr">📁 {{ i.name }}</button>
+    {% else %}
+    <span dir="ltr">📄 {{ i.name }}</span>
+    {% endif %}
+    <div class="flex items-center gap-4 text-sm">
+      <span class="text-slate-400" dir="ltr">{% if not i.is_dir %}{{ i.size|filesizeformat }}{% endif %}</span>
+      <span class="text-slate-500" dir="ltr">{{ i.mtime|date:"Y-m-d H:i" }}</span>
+      {% if not i.is_dir %}
+      <a href="{% url 'files_download' s.id %}?path={{ i.path|urlencode }}" class="text-sky-400">⬇️</a>
+      {% endif %}
+      <form hx-post="{% url 'files_delete' s.id %}" hx-target="#file-list" hx-confirm="حذف بشه؟">
+        <input type="hidden" name="path" value="{{ i.path }}">
+        <button class="text-red-400 hover:text-red-300">🗑️</button>
+      </form>
+    </div>
+  </div>
+  {% empty %}
+  <p class="p-4 text-slate-400">اینجا خالیه 🤷</p>
+  {% endfor %}
+</div>

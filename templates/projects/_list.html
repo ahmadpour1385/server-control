@@ -1,0 +1,22 @@
+{% for p in projects %}
+<div class="bg-slate-800 p-4 rounded-xl mb-3">
+  <div class="flex items-center justify-between">
+    <div>
+      <div class="font-bold">{{ p.name }}
+        <span hx-get="{% url 'projects_status' p.id %}" hx-trigger="load, every 5s, refresh-status from:body"></span>
+      </div>
+      <div class="text-sm text-slate-400" dir="ltr">{{ p.path }} → {{ p.start }}</div>
+    </div>
+    <div class="flex gap-3 text-sm">
+      <button hx-post="{% url 'projects_action' p.id 'start' %}" hx-target="#out-{{ p.id }}" class="text-emerald-400">▶️ استارت</button>
+      <button hx-post="{% url 'projects_action' p.id 'stop' %}" hx-target="#out-{{ p.id }}" class="text-amber-400">⏹️ استاپ</button>
+      <button hx-post="{% url 'projects_action' p.id 'update' %}" hx-target="#out-{{ p.id }}" class="text-sky-400">🔄 آپدیت</button>
+      <button hx-post="{% url 'projects_action' p.id 'logs' %}" hx-target="#out-{{ p.id }}" class="text-slate-300">📜 لاگ</button>
+      <button hx-post="{% url 'projects_delete' p.id %}" hx-target="#project-list" hx-confirm="از لیست حذف بشه؟ (پروسه روی سرور متوقف نمی‌شه)" class="text-red-400">🗑️</button>
+    </div>
+  </div>
+  <div id="out-{{ p.id }}"></div>
+</div>
+{% empty %}
+<p class="text-slate-400">هنوز پروژه‌ای اضافه نکردی 🤷</p>
+{% endfor %}

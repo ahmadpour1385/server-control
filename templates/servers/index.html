@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold">🖥️ Server Control</h1>
+  <div class="flex items-center gap-4">
+    <a href="{% url 'dns' %}" class="text-violet-400 hover:text-violet-300">🌐 DNS</a>
+    <form method="post" action="{% url 'logout' %}">
+      {% csrf_token %}
+      <button class="text-slate-400 hover:text-slate-300">🚪 خروج</button>
+    </form>
+  </div>
+</div>
+
+<form hx-post="{% url 'add' %}" hx-target="#server-list"
+      hx-on::after-request="this.reset()"
+      class="grid grid-cols-2 gap-3 bg-slate-800 p-4 rounded-xl mb-6">
+  <input name="name" placeholder="اسم سرور" required class="bg-slate-700 rounded p-2">
+  <input name="host" placeholder="IP یا دامنه" required dir="ltr" class="bg-slate-700 rounded p-2">
+  <input name="username" placeholder="یوزرنیم" required dir="ltr" class="bg-slate-700 rounded p-2">
+  <input name="port" placeholder="پورت (پیش‌فرض 22 / ویندوز 5985)" type="number" dir="ltr" class="bg-slate-700 rounded p-2">
+  <select name="os" class="bg-slate-700 rounded p-2">
+    <option value="linux">🐧 لینوکس</option>
+    <option value="windows">🪟 ویندوز</option>
+  </select>
+  <button class="bg-emerald-600 hover:bg-emerald-500 rounded p-2 font-bold">➕ افزودن سرور</button>
+</form>
+
+<div id="server-list">
+  {% include 'servers/_list.html' %}
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% if error %}
+<p class="bg-red-900/40 text-red-300 rounded p-3 text-sm">{{ error }}</p>
+{% else %}
+<div class="bg-slate-800 rounded-xl p-4 space-y-5">
+
+  <div>
+    <div class="font-bold mb-2">📋 رکوردی که باید توی cPanel بسازی</div>
+    <div class="grid grid-cols-4 gap-2 text-sm bg-slate-700 rounded p-3" dir="ltr">
+      <div class="text-slate-400">Type</div><div class="text-slate-400">Name</div>
+      <div class="text-slate-400">Address</div><div class="text-slate-400">TTL</div>
+      <div class="font-bold text-sky-300">A</div><div class="break-all">{{ name }}.</div>
+      <div>{{ ip }}</div><div>300</div>
+    </div>
+    <ol class="list-decimal pr-5 mt-3 text-sm text-slate-300 space-y-1">
+      <li>توی cPanel برو <b>Zone Editor</b></li>
+      <li>کنار دامنه‌ت روی <b>Manage</b> بزن</li>
+      <li><b>Add Record</b> ← نوع <b>A</b> ← اسم و IP بالا ← TTL برابر 300 ← ذخیره</li>
+      <li>برگرد اینجا و دوباره دکمه چک رو بزن</li>
+    </ol>
+  </div>
+
+  <div>
+    <div class="font-bold mb-2">🧭 وضعیت</div>
+    {% if verdict == 'ok' %}
+    <p class="text-emerald-400">✅ رکورد روی نیم‌سرورهای رسمی درسته و به {{ ip }} اشاره می‌کنه.</p>
+    {% elif verdict == 'missing' %}
+    <p class="text-amber-400">⏳ هنوز این رکورد ثبت نشده. توی cPanel بسازش و دوباره چک کن.</p>
+    {% elif verdict == 'wrong' %}
+    <p class="text-red-400">⚠️ این اسم از قبل رکورد دیگه‌ای با IP متفاوت داره. قبل از عوض کردنش مطمئن شو چیز مهمی نیست.</p>
+    {% else %}
+    <p class="text-slate-400">❓ نتونستم از نیم‌سرورهای رسمی جواب بگیرم. یه بار دیگه امتحان کن.</p>
+    {% endif %}
+
+    <div class="text-sm text-slate-400 mt-3 space-y-1" dir="ltr">
+      {% for ns, vals in auth.items %}
+      <div>{{ ns }}: {% if vals is None %}timeout{% elif vals %}{{ vals|join:", " }}{% else %}no record{% endif %}</div>
+      {% endfor %}
+      <div>your DNS (may be cached): {% if mine %}{{ mine|join:", " }}{% else %}-{% endif %}</div>
+    </div>
+  </div>
+
+  <div>
+    <div class="font-bold mb-2">🔌 پورت‌های سرور ({{ ip }})</div>
+    <div class="flex gap-4 text-sm" dir="ltr">
+      {% for port, ok in ports %}
+      <span>{% if ok %}🟢{% else %}🔴{% endif %} {{ port }}</span>
+      {% endfor %}
+    </div>
+    <p class="text-xs text-slate-500 mt-1">22 = SSH، 80 = HTTP، 443 = HTTPS. بسته بودن یعنی یا سرویسی روش نیست یا فایروال جلوشه.</p>
+  </div>
+</div>
+{% endif %}

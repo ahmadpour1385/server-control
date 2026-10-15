@@ -1,0 +1,10 @@
+<form hx-post="{% url 'monitor_connect' s.id %}" hx-target="#info-{{ s.id }}"
+      class="flex flex-wrap items-center gap-2 mt-3">
+  <input type="password" name="password" placeholder="پسورد" required dir="ltr"
+         class="bg-slate-700 rounded p-2 flex-1 min-w-40">
+  <label class="flex items-center gap-2 text-sm text-slate-300">
+    <input type="checkbox" name="save" value="1"> ذخیره (رمزنگاری‌شده)
+  </label>
+  <button class="bg-sky-600 hover:bg-sky-500 rounded px-4 py-2 font-bold">🔌 اتصال</button>
+</form>
+{% if error %}<p class="text-red-400 text-sm mt-2" dir="ltr">{{ error }}</p>{% endif %}

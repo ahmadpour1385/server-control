@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <h1 class="text-xl font-bold">📦 پروژه‌ها: {{ s.name }}</h1>
+  <a href="{% url 'index' %}" class="text-sky-400">⬅️ برگشت</a>
+</div>
+
+<form hx-post="{% url 'projects_add' s.id %}" hx-target="#project-list"
+      hx-on::after-request="this.reset()"
+      class="grid grid-cols-2 gap-3 bg-slate-800 p-4 rounded-xl mb-6">
+  <input name="name" placeholder="اسم پروژه" required class="bg-slate-700 rounded p-2">
+  <input name="path" placeholder="مسیر پوشه روی سرور (مثلاً /home/user)" required dir="ltr" class="bg-slate-700 rounded p-2">
+  <input name="start" placeholder="دستور اجرا (مثلاً python3 -m http.server 8080)" required dir="ltr" class="bg-slate-700 rounded p-2 col-span-2">
+  <input name="update" placeholder="دستور آپدیت (اختیاری، مثلاً git pull)" dir="ltr" class="bg-slate-700 rounded p-2 col-span-2">
+  <button class="bg-emerald-600 hover:bg-emerald-500 rounded p-2 font-bold col-span-2">➕ افزودن پروژه</button>
+</form>
+
+<div id="project-list">
+  {% include 'projects/_list.html' %}
+</div>
+{% endblock %}

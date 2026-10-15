@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <h1 class="text-xl font-bold">🌐 DNS</h1>
+  <a href="{% url 'index' %}" class="text-sky-400">⬅️ برگشت</a>
+</div>
+
+<form hx-get="{% url 'dns_lookup' %}" hx-target="#dns-result"
+      class="flex gap-2 bg-slate-800 p-4 rounded-xl mb-4">
+  <input name="name" value="{{ name }}" placeholder="مثلاً example.ir" required dir="ltr"
+         class="bg-slate-700 rounded p-2 flex-1">
+  <button class="bg-sky-600 hover:bg-sky-500 rounded px-4 font-bold">🔍 جستجو</button>
+</form>
+<div id="dns-result"></div>
+
+<h2 class="text-lg font-bold mt-10 mb-2">🔗 اتصال ساب‌دامین به سرور</h2>
+<p class="text-sm text-slate-400 mb-3">
+  فقط ساب‌دامین. دامنه اصلی، www، mail و... قفل‌اند. پنل چیزی تغییر نمی‌ده: رکورد رو نشون می‌ده،
+  تو توی cPanel می‌سازیش، و پنل چک می‌کنه.
+</p>
+<form hx-get="{% url 'dns_check' %}" hx-target="#check-result"
+      class="grid grid-cols-2 gap-2 bg-slate-800 p-4 rounded-xl mb-4">
+  <input name="name" placeholder="ساب‌دامین، مثلاً vps.example.ir" required dir="ltr"
+         class="bg-slate-700 rounded p-2">
+  <input name="ip" list="server-ips" placeholder="IP عمومی سرور" required dir="ltr"
+         class="bg-slate-700 rounded p-2">
+  <datalist id="server-ips">
+    {% for s in servers %}<option value="{{ s.host }}">{{ s.name }}</option>{% endfor %}
+  </datalist>
+  <button class="col-span-2 bg-violet-600 hover:bg-violet-500 rounded p-2 font-bold">
+    🔎 رکورد رو نشون بده و چک کن
+  </button>
+</form>
+<div id="check-result"></div>
+{% endblock %}

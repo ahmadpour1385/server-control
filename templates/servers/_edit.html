@@ -1,0 +1,13 @@
+<form id="server-{{ s.id }}" hx-post="{% url 'edit_save' s.id %}" hx-target="#server-list"
+      class="grid grid-cols-2 gap-3 bg-slate-800 p-4 rounded-xl mb-3 border border-sky-700">
+  <input name="name" value="{{ s.name }}" placeholder="اسم سرور" required class="bg-slate-700 rounded p-2">
+  <input name="host" value="{{ s.host }}" placeholder="IP یا دامنه" required dir="ltr" class="bg-slate-700 rounded p-2">
+  <input name="username" value="{{ s.username }}" placeholder="یوزرنیم" required dir="ltr" class="bg-slate-700 rounded p-2">
+  <input name="port" type="number" value="{{ s.port }}" placeholder="پورت" dir="ltr" class="bg-slate-700 rounded p-2">
+  <p class="col-span-2 text-xs text-amber-400">
+    ⚠️ اگه IP، پورت یا یوزرنیم عوض بشه، پسورد ذخیره‌شده پاک می‌شه (و با تغییر IP یا پورت، اثر انگشت هم).
+  </p>
+  <button class="bg-emerald-600 hover:bg-emerald-500 rounded p-2 font-bold">💾 ذخیره</button>
+  <button type="button" hx-get="{% url 'server_list' %}" hx-target="#server-list"
+          class="bg-slate-700 hover:bg-slate-600 rounded p-2">انصراف</button>
+</form>

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'vendor/xterm.css' %}">
+<div class="flex items-center justify-between mb-4">
+  <h1 class="text-xl font-bold">💻 ترمینال: {{ s.name }}</h1>
+  <a href="{% url 'index' %}" class="text-sky-400">⬅️ برگشت</a>
+</div>
+<div id="term" dir="ltr" class="bg-black rounded-xl p-2" style="height:70vh"></div>
+<p class="text-sm text-slate-400 mt-2">اگه ترمینال بلافاصله بسته شد، اول توی صفحه اصلی دکمه 🔌 اتصال رو بزن و پسورد بده.</p>
+
+<script src="{% static 'vendor/xterm.js' %}"></script>
+<script src="{% static 'vendor/addon-fit.js' %}"></script>
+<script>
+const term = new Terminal({cursorBlink: true, fontSize: 15, fontFamily: 'Consolas, monospace'});
+const fit = new FitAddon.FitAddon();
+term.loadAddon(fit);
+term.open(document.getElementById('term'));
+fit.fit();
+term.focus();
+
+const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+const ws = new WebSocket(`${proto}://${location.host}/ws/terminal/{{ s.id }}/`);
+ws.binaryType = 'arraybuffer';
+const send = o => ws.readyState === 1 && ws.send(JSON.stringify(o));
+
+ws.onopen = () => send({type: 'resize', cols: term.cols, rows: term.rows});
+ws.onmessage = e => term.write(typeof e.data === 'string' ? e.data : new Uint8Array(e.data));
+ws.onclose = () => term.write('\r\n[connection closed]\r\n');
+term.onData(d => send({type: 'input', data: d}));
+window.addEventListener('resize', () => {
+  fit.fit();
+  send({type: 'resize', cols: term.cols, rows: term.rows});
+});
+</script>
+{% endblock %}

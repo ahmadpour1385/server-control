@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <h1 class="text-xl font-bold">📂 فایل‌ها: {{ s.name }}</h1>
+  <a href="{% url 'index' %}" class="text-sky-400">⬅️ برگشت</a>
+</div>
+<div id="file-list">
+  {% include 'files/_list.html' %}
+</div>
+{% endblock %}
