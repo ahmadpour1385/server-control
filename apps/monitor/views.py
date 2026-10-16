@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
-from services import store, ssh, psrp, history
+from services import store, ssh, psrp, history, errors
 
 CMD = (
     "hostname; uptime -p; "
@@ -55,10 +55,9 @@ def _render_info(request, s, save_pw=None):
     except Exception as e:
         ssh.forget(s['id'])
         psrp.forget(s['id'])
+        friendly, detail = errors.explain(e)
         return render(request, 'monitor/_login.html',
-                      {'s': s, 'error': (str(e) or repr(e))[:300]})
-    return render(request, 'monitor/_info.html',
-                  {'s': s, 'info': info, 'charts': history.charts(s['id'])})
+                      {'s': s, 'error': friendly, 'detail': detail})
 
 
 def info(request, sid):

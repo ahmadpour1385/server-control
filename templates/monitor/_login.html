@@ -7,4 +7,14 @@
   </label>
   <button class="bg-sky-600 hover:bg-sky-500 rounded px-4 py-2 font-bold">🔌 اتصال</button>
 </form>
-{% if error %}<p class="text-red-400 text-sm mt-2" dir="ltr">{{ error }}</p>{% endif %}
+{% if error %}
+<div class="mt-2 text-sm">
+  <p class="text-red-400">{{ error }}</p>
+  {% if detail %}
+  <details class="mt-1 text-xs text-slate-500">
+    <summary class="cursor-pointer">جزئیات فنی</summary>
+    <p class="mt-1 break-all" dir="ltr">{{ detail }}</p>
+  </details>
+  {% endif %}
+</div>
+{% endif %}

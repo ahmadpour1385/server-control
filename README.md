@@ -87,8 +87,18 @@ servercontrol/
 └── panel_data/        # settings and secrets (git-ignored)
 ```
 
+## Tests
+
+```powershell
+python manage.py test tests
+```
+
+Tests use a temporary settings file and never touch `panel_data/`.
+They cover login and lockout, password encryption, SSH host-key pinning,
+the DNS safety locks and friendly error messages.
+
+
 ## Limitations and roadmap
 
 - Terminal, file manager and project manager currently support Linux servers only.
 - Monitoring history lives in memory and resets when the panel restarts.
-- No automated tests yet.

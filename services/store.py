@@ -12,4 +12,5 @@ def load():
 
 
 def save(data):
+    FILE.parent.mkdir(parents=True, exist_ok=True)
     FILE.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding='utf-8')

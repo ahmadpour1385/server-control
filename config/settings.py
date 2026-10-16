@@ -22,6 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 _KEY_FILE = BASE_DIR / 'panel_data' / 'secret_key.txt'
+_KEY_FILE.parent.mkdir(exist_ok=True)
 if not _KEY_FILE.exists():
     _KEY_FILE.write_text(secrets.token_urlsafe(64))
 SECRET_KEY = _KEY_FILE.read_text().strip()
