@@ -1,20 +1,22 @@
-<form hx-post="{% url 'monitor_connect' s.id %}" hx-target="#info-{{ s.id }}"
-      class="flex flex-wrap items-center gap-2 mt-3">
-  <input type="password" name="password" placeholder="پسورد" required dir="ltr"
-         class="bg-slate-700 rounded p-2 flex-1 min-w-40">
-  <label class="flex items-center gap-2 text-sm text-slate-300">
-    <input type="checkbox" name="save" value="1"> ذخیره (رمزنگاری‌شده)
-  </label>
-  <button class="bg-sky-600 hover:bg-sky-500 rounded px-4 py-2 font-bold">🔌 اتصال</button>
-</form>
-{% if error %}
-<div class="mt-2 text-sm">
-  <p class="text-red-400">{{ error }}</p>
-  {% if detail %}
-  <details class="mt-1 text-xs text-slate-500">
-    <summary class="cursor-pointer">جزئیات فنی</summary>
-    <p class="mt-1 break-all" dir="ltr">{{ detail }}</p>
-  </details>
+<div class="panel-body">
+  <form hx-post="{% url 'monitor_connect' s.id %}" hx-target="#info-{{ s.id }}"
+        class="flex flex-wrap items-end gap-3">
+    <div class="grow" style="min-width:220px">
+      <label class="label">پسورد {% if s.os == 'windows' %}ویندوز{% else %}SSH{% endif %}</label>
+      <input type="password" name="password" required dir="ltr" class="input">
+    </div>
+    <label class="check"><input type="checkbox" name="save" value="1"> ذخیره (رمزنگاری‌شده)</label>
+    <button class="btn btn-primary">اتصال</button>
+  </form>
+  {% if error %}
+  <div class="alert alert-danger mt-3">
+    {{ error }}
+    {% if detail %}
+    <details class="mt-1 text-xs" style="color:var(--muted)">
+      <summary style="cursor:pointer">جزئیات فنی</summary>
+      <p class="mt-1 break-all" dir="ltr">{{ detail }}</p>
+    </details>
+    {% endif %}
+  </div>
   {% endif %}
 </div>
-{% endif %}

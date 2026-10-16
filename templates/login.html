@@ -1,15 +1,36 @@
 {% extends 'base.html' %}
+{% block title %}ورود | Server Control{% endblock %}
+{% block nav %}{% endblock %}
 {% block content %}
-<div class="max-w-sm mx-auto mt-24 bg-slate-800 p-6 rounded-xl">
-  <h1 class="text-xl font-bold mb-4">🔐 {% if first %}ساخت پسورد پنل{% else %}ورود به پنل{% endif %}</h1>
-  {% if error %}<p class="text-red-300 text-sm mb-3">{{ error }}</p>{% endif %}
-  <form method="post" class="grid gap-3">
-    {% csrf_token %}
-    <input type="password" name="password" placeholder="پسورد" required autofocus dir="ltr" class="bg-slate-700 rounded p-2">
-    {% if first %}
-    <input type="password" name="password2" placeholder="تکرار پسورد" required dir="ltr" class="bg-slate-700 rounded p-2">
-    {% endif %}
-    <button class="bg-emerald-600 hover:bg-emerald-500 rounded p-2 font-bold">{% if first %}ساخت و ورود{% else %}ورود{% endif %}</button>
-  </form>
+<div style="max-width:360px; margin:12vh auto 0">
+  <div class="flex items-center gap-2 mb-6">
+    <svg class="icon" style="width:22px;height:22px"><use href="#i-server"/></svg>
+    <span class="text-lg font-bold">Server Control</span>
+  </div>
+  <div class="card card-pad">
+    <h1 class="text-base font-semibold mb-1">{% if first %}ساخت پسورد پنل{% else %}ورود{% endif %}</h1>
+    <p class="muted text-sm mb-4">
+      {% if first %}
+      این پسورد، هم ورود به پنل و هم کلید رمزنگاری پسوردهای ذخیره‌شده است. حداقل ۸ کاراکتر. اگه فراموشش کنی، پسوردهای ذخیره‌شده قابل بازیابی نیستن.
+      {% else %}
+      برای ادامه، پسورد پنل را وارد کن.
+      {% endif %}
+    </p>
+    {% if error %}<div class="alert alert-danger mb-3">{{ error }}</div>{% endif %}
+    <form method="post" class="grid gap-3">
+      {% csrf_token %}
+      <div>
+        <label class="label">پسورد</label>
+        <input type="password" name="password" required autofocus dir="ltr" class="input">
+      </div>
+      {% if first %}
+      <div>
+        <label class="label">تکرار پسورد</label>
+        <input type="password" name="password2" required dir="ltr" class="input">
+      </div>
+      {% endif %}
+      <button class="btn btn-primary" style="justify-content:center">{% if first %}ساخت و ورود{% else %}ورود{% endif %}</button>
+    </form>
+  </div>
 </div>
 {% endblock %}

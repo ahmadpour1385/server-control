@@ -1,32 +1,49 @@
 {% for s in servers %}
-<div id="server-{{ s.id }}" class="bg-slate-800 p-4 rounded-xl mb-3">
-  <div class="flex items-center justify-between">
-    <div>
-      <div class="font-bold">{{ s.name }} <span class="text-xs text-slate-400">({{ s.os }})</span></div>
-      <div class="text-sm text-slate-400" dir="ltr">{{ s.username }}@{{ s.host }}:{{ s.port }}</div>
+<div id="server-{{ s.id }}" class="card mb-3">
+  <div class="card-pad flex flex-wrap items-center justify-between gap-3">
+    <div class="min-w-0">
+      <div class="flex items-center gap-2">
+        <span class="font-semibold">{{ s.name }}</span>
+        <span class="badge">{% if s.os == 'windows' %}Windows{% else %}Linux{% endif %}</span>
+      </div>
+      <div class="muted text-sm" dir="ltr" style="text-align:right">{{ s.username }}@{{ s.host }}:{{ s.port }}</div>
     </div>
-    <div class="flex gap-4">
-      <a href="{% url 'projects' s.id %}" class="text-fuchsia-400 hover:text-fuchsia-300">📦 پروژه‌ها</a>
-      <a href="{% url 'files' s.id %}" class="text-amber-400 hover:text-amber-300">📂 فایل‌ها</a>
-      <a href="{% url 'terminal' s.id %}" class="text-emerald-400 hover:text-emerald-300">💻 ترمینال</a>
-      <button hx-get="{% url 'monitor_info' s.id %}" hx-target="#info-{{ s.id }}"
-              class="text-sky-400 hover:text-sky-300">🔌 اتصال</button>
-      <button hx-get="{% url 'edit_form' s.id %}" hx-target="#server-{{ s.id }}" hx-swap="outerHTML"
-              class="text-slate-300 hover:text-white">✏️ ویرایش</button>
-      <button hx-post="{% url 'delete' s.id %}" hx-target="#server-list"
-              hx-confirm="سرور و پروژه‌هاش حذف بشن؟" class="text-red-400 hover:text-red-300">🗑️ حذف</button>
+    <div class="flex flex-wrap items-center gap-1.5">
+      <button class="btn btn-primary btn-sm" hx-get="{% url 'monitor_info' s.id %}" hx-target="#info-{{ s.id }}">
+        <svg class="icon"><use href="#i-plug"/></svg> اتصال
+      </button>
+      <a class="btn btn-sm" href="{% url 'terminal' s.id %}"><svg class="icon"><use href="#i-terminal"/></svg> ترمینال</a>
+      <a class="btn btn-sm" href="{% url 'files' s.id %}"><svg class="icon"><use href="#i-folder"/></svg> فایل‌ها</a>
+      <a class="btn btn-sm" href="{% url 'projects' s.id %}"><svg class="icon"><use href="#i-package"/></svg> پروژه‌ها</a>
+      <button class="btn btn-ghost btn-sm" title="ویرایش" aria-label="ویرایش"
+              hx-get="{% url 'edit_form' s.id %}" hx-target="#server-{{ s.id }}" hx-swap="outerHTML">
+        <svg class="icon"><use href="#i-pencil"/></svg>
+      </button>
+      <button class="btn btn-ghost btn-danger btn-sm" title="حذف" aria-label="حذف"
+              hx-post="{% url 'delete' s.id %}" hx-target="#server-list"
+              hx-confirm="سرور و پروژه‌هاش حذف بشن؟">
+        <svg class="icon"><use href="#i-trash"/></svg>
+      </button>
     </div>
   </div>
+
+  <div id="info-{{ s.id }}"></div>
+
   {% if s.host_key %}
-  <div class="flex items-center justify-between mt-2 text-xs text-slate-500">
-    <span dir="ltr">🔑 {{ s.host_key }}</span>
-    <button hx-post="{% url 'reset_key' s.id %}" hx-target="#server-list"
-            hx-confirm="اثر انگشت پاک بشه؟ (فقط وقتی سرور رو دوباره نصب کردی)"
-            class="hover:text-slate-300">ریست اثر انگشت</button>
+  <div class="card-foot flex items-center justify-between gap-3">
+    <span class="muted text-xs flex items-center gap-1.5 min-w-0" dir="ltr">
+      <svg class="icon"><use href="#i-key"/></svg>
+      <span class="truncate">{{ s.host_key }}</span>
+    </span>
+    <button class="btn btn-ghost btn-sm" hx-post="{% url 'reset_key' s.id %}" hx-target="#server-list"
+            hx-confirm="اثر انگشت پاک بشه؟ (فقط وقتی سرور رو دوباره نصب کردی)">
+      ریست اثر انگشت
+    </button>
   </div>
   {% endif %}
-  <div id="info-{{ s.id }}"></div>
 </div>
 {% empty %}
-<p class="text-slate-400">هنوز سروری اضافه نکردی 🤷</p>
+<div class="card card-pad muted text-sm text-center">
+  هنوز سروری اضافه نشده است. از بالا «افزودن سرور» را بزن.
+</div>
 {% endfor %}

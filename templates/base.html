@@ -4,14 +4,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Server Control</title>
+  <title>{% block title %}Server Control{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/panel.css' %}">
   <script src="{% static 'vendor/tailwind.js' %}"></script>
   <script src="{% static 'vendor/htmx.min.js' %}"></script>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen"
-      hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
-  <div class="max-w-4xl mx-auto p-6">
+<body class="app" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+  {% include 'icons.html' %}
+  {% block nav %}
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="{% url 'index' %}" class="brand">
+        <svg class="icon"><use href="#i-server"/></svg> Server Control
+      </a>
+      <nav class="nav">
+        <a href="{% url 'index' %}" class="{% if request.path|slice:':5' != '/dns/' %}active{% endif %}">سرورها</a>
+        <a href="{% url 'dns' %}" class="{% if request.path|slice:':5' == '/dns/' %}active{% endif %}">DNS</a>
+      </nav>
+      <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button class="btn btn-ghost btn-sm"><svg class="icon"><use href="#i-logout"/></svg> خروج</button>
+      </form>
+    </div>
+  </header>
+  {% endblock %}
+  <main class="container-app">
     {% block content %}{% endblock %}
-  </div>
+  </main>
 </body>
 </html>

@@ -1,29 +1,43 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="flex items-center justify-between mb-6">
-  <h1 class="text-2xl font-bold">🖥️ Server Control</h1>
-  <div class="flex items-center gap-4">
-    <a href="{% url 'dns' %}" class="text-violet-400 hover:text-violet-300">🌐 DNS</a>
-    <form method="post" action="{% url 'logout' %}">
-      {% csrf_token %}
-      <button class="text-slate-400 hover:text-slate-300">🚪 خروج</button>
-    </form>
-  </div>
+<div class="mb-5">
+  <h1 class="page-title">سرورها</h1>
+  <p class="muted text-sm">مدیریت زنده سرورهای لینوکس و ویندوز</p>
 </div>
 
-<form hx-post="{% url 'add' %}" hx-target="#server-list"
-      hx-on::after-request="this.reset()"
-      class="grid grid-cols-2 gap-3 bg-slate-800 p-4 rounded-xl mb-6">
-  <input name="name" placeholder="اسم سرور" required class="bg-slate-700 rounded p-2">
-  <input name="host" placeholder="IP یا دامنه" required dir="ltr" class="bg-slate-700 rounded p-2">
-  <input name="username" placeholder="یوزرنیم" required dir="ltr" class="bg-slate-700 rounded p-2">
-  <input name="port" placeholder="پورت (پیش‌فرض 22 / ویندوز 5985)" type="number" dir="ltr" class="bg-slate-700 rounded p-2">
-  <select name="os" class="bg-slate-700 rounded p-2">
-    <option value="linux">🐧 لینوکس</option>
-    <option value="windows">🪟 ویندوز</option>
-  </select>
-  <button class="bg-emerald-600 hover:bg-emerald-500 rounded p-2 font-bold">➕ افزودن سرور</button>
-</form>
+<details class="card mb-5" {% if not servers %}open{% endif %}>
+  <summary><svg class="icon"><use href="#i-plus"/></svg> افزودن سرور</summary>
+  <form hx-post="{% url 'add' %}" hx-target="#server-list"
+        hx-on::after-request="this.reset(); this.closest('details').open = false"
+        class="panel-body grid gap-3 md:grid-cols-2">
+    <div>
+      <label class="label">اسم سرور</label>
+      <input name="name" required class="input" placeholder="مثلاً web-1">
+    </div>
+    <div>
+      <label class="label">سیستم‌عامل</label>
+      <select name="os" class="input">
+        <option value="linux">Linux (SSH)</option>
+        <option value="windows">Windows (WinRM)</option>
+      </select>
+    </div>
+    <div>
+      <label class="label">آدرس (IP یا دامنه)</label>
+      <input name="host" required dir="ltr" class="input" placeholder="203.0.113.10">
+    </div>
+    <div>
+      <label class="label">پورت</label>
+      <input name="port" type="number" dir="ltr" class="input" placeholder="خالی = پیش‌فرض (22 یا 5985)">
+    </div>
+    <div>
+      <label class="label">نام کاربری</label>
+      <input name="username" required dir="ltr" class="input">
+    </div>
+    <div class="flex items-end">
+      <button class="btn btn-primary w-full" style="justify-content:center">افزودن</button>
+    </div>
+  </form>
+</details>
 
 <div id="server-list">
   {% include 'servers/_list.html' %}
